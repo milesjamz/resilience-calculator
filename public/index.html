@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Resilience Calculator</title>
+    <script src="https://unpkg.com/tailwindcss-cdn@3.4.0/tailwindcss.js"></script>
+    <style>
+        .loading-spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="text-center mb-8">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                </svg>
+                <h1 class="text-3xl font-bold text-gray-800">Flood Resilience Calculator</h1>
+            </div>
+            <img src="https://media.architecturaldigest.com/photos/582b58d90058935c3e94bf9a/16:9/w_2560%2Cc_limit/brad-pitt-new-orleans-1.jpg" alt="Nola's most loved architect" height="550" width="750"/>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                Professional flood resilience analysis for architects using FEMA-backed methodology.
+                Get scientifically-grounded assessments and recommendations for your building projects.</p></p>
+                Not associated with Brad Pitt.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    Building Assessment
+                </h2>
+
+                <form id="assessmentForm" class="space-y-6">
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">
+                                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                                Neighborhood
+                            </label>
+                            <select id="neighborhood" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select neighborhood...</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Foundation Type</label>
+                            <select id="foundationType" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select foundation...</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">
+                                Elevation (feet above ground)
+                                <span class="text-xs text-gray-500 block">Current building elevation</span>
+                            </label>
+                            <input type="number" id="elevation" required min="0" max="50" step="0.5" 
+                                   class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="e.g., 12">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-6">Primary Materials</label>
+                            <select id="materials" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select materials...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Flood Mitigation Features</label>
+                        <select id="floodMitigation" required class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select mitigation...</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" id="submitBtn" 
+                            class="w-full bg-blue-600 text-white p-4 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors flex items-center justify-center">
+                        <span id="submitText">Assess Flood Resilience</span>
+                        <div id="submitSpinner" class="loading-spinner ml-2 hidden"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-semibold mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Assessment Results
+                </h2>
+
+                <div id="results" class="hidden">
+                </div>
+
+                <div id="noResults" class="text-center py-12">
+                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <p class="text-gray-500">Enter your building details and click "Assess Flood Resilience" to see your results</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-12 bg-blue-50 border border-blue-200 rounded-lg p-6">
+            <h3 class="font-semibold text-blue-800 mb-3">Methodology & Data Sources</h3>
+            <div class="text-blue-700 text-sm space-y-2">
+                <p><strong>Foundation Scoring:</strong> Based on FEMA Technical Bulletins, NFIP regulations, and peer-reviewed research on flood-resistant construction.</p>
+                <p><strong>Risk Assessment:</strong> Incorporates NOAA sea level rise projections, NASA subsidence measurements, and Louisiana Climate Action Plan data.</p>
+                <p><strong>Regulatory Compliance:</strong> Aligned with NFIP Risk Rating 2.0 methodology and current building code requirements.</p>
+                <p><strong>Professional Use:</strong> This tool provides preliminary assessments for architectural planning, and was built in about 4 hours by an unpaid job applicant! Consult licensed architects, like Ira Concepcion, for final design decisions.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FloodAssessmentApp {
+            constructor() {
+                this.baseURL = window.location.origin;
+                this.init();
+            }
+
+            async init() {
+                await this.loadFormOptions();
+                this.bindEvents();
+            }
+
+            async loadFormOptions() {
+                try {
+                    const [neighborhoods, foundations, materials, mitigations] = await Promise.all([
+                        this.fetchData('/api/neighborhoods'),
+                        this.fetchData('/api/foundation-types'),
+                        this.fetchData('/api/materials'),
+                        this.fetchData('/api/mitigation-options')
+                    ]);
+
+                    this.populateSelect('neighborhood', neighborhoods, 'name');
+                    this.populateSelect('foundationType', foundations, 'name');
+                    this.populateSelect('materials', materials, 'name');
+                    this.populateSelect('floodMitigation', mitigations, 'name');
+                } catch (error) {
+                    console.error('Failed to load form options:', error);
+                    this.showError('Failed to load form options. Please refresh the page.');
+                }
+            }
+
+            async fetchData(endpoint) {
+                const response = await fetch(this.baseURL + endpoint);
+                const result = await response.json();
+                if (!result.success) throw new Error(result.error);
+                return result.data;
+            }
+
+            populateSelect(elementId, options, nameField) {
+                const select = document.getElementById(elementId);
+                select.innerHTML = '<option value="">Select ' + elementId.replace(/([A-Z])/g, ' $1').toLowerCase() + '...</option>';
+                
+                options.forEach(option => {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = option.id;
+                    optionElement.textContent = option[nameField];
+                    
+                    // Add additional info for some selects
+                    if (elementId === 'foundationType' && option.rank) {
+                        optionElement.textContent += ` (Rank ${option.rank})`;
+                    }
+                    if (elementId === 'neighborhood' && option.floodZone) {
+                        optionElement.textContent += ` (Zone ${option.floodZone})`;
+                    }
+                    
+                    select.appendChild(optionElement);
+                });
+            }
+
+            bindEvents() {
+                document.getElementById('assessmentForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitAssessment();
+                });
+            }
+
+            async submitAssessment() {
+                const submitBtn = document.getElementById('submitBtn');
+                const submitText = document.getElementById('submitText');
+                const submitSpinner = document.getElementById('submitSpinner');
+                
+                submitBtn.disabled = true;
+                submitText.textContent = 'Analyzing...';
+                submitSpinner.classList.remove('hidden');
+
+                try {
+                    const formData = this.getFormData();
+                    const response = await fetch(this.baseURL + '/api/assess', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        this.displayResults(result.data);
+                    } else {
+                        this.showError('Assessment failed: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Assessment error:', error);
+                    this.showError('Network error. Please check your connection and try again.');
+                } finally {
+                    submitBtn.disabled = false;
+                    submitText.textContent = 'Assess Flood Resilience';
+                    submitSpinner.classList.add('hidden');
+                }
+            }
+
+            getFormData() {
+                return {
+                    neighborhood: document.getElementById('neighborhood').value,
+                    foundationType: document.getElementById('foundationType').value,
+                    elevation: parseFloat(document.getElementById('elevation').value),
+                    materials: document.getElementById('materials').value,
+                    floodMitigation: document.getElementById('floodMitigation').value,
+                };
+            }
+
+            displayResults(assessment) {
+                const resultsDiv = document.getElementById('results');
+                const noResultsDiv = document.getElementById('noResults');
+                
+                resultsDiv.innerHTML = this.generateResultsHTML(assessment);
+                resultsDiv.classList.remove('hidden');
+                noResultsDiv.classList.add('hidden');
+                
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            generateResultsHTML(assessment) {
+                const scoreColor = assessment.resilienceScore >= 80 ? 'text-green-600' : 
+                                 assessment.resilienceScore >= 70 ? 'text-yellow-600' : 'text-red-600';
+                
+                const scoreBg = assessment.resilienceScore >= 80 ? 'bg-green-100' : 
+                               assessment.resilienceScore >= 70 ? 'bg-yellow-100' : 'bg-red-100';
+
+                return `
+                    <div class="space-y-6">
+                        <!-- Overall Score -->
+                        <div class="text-center">
+                            <div class="inline-flex items-center justify-center w-24 h-24 ${scoreBg} rounded-full mb-4">
+                                <span class="text-2xl font-bold ${scoreColor}">${assessment.resilienceScore}%</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-800">Resilience Score</h3>
+                            <p class="text-sm text-gray-600 mt-2">${assessment.summary}</p>
+                        </div>
+
+                        <!-- Foundation Analysis -->
+                        <div class="border-t pt-6">
+                            <h4 class="font-semibold mb-3 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                                Foundation Analysis
+                            </h4>
+                            <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                                <div class="flex justify-between">
+                                    <span class="text-sm font-medium">Current Rating:</span>
+                                    <span class="text-sm ${assessment.foundationAnalysis.strengthScore >= 70 ? 'text-green-600' : 'text-yellow-600'}">${assessment.foundationAnalysis.currentRating}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm font-medium">NFIP Compliant:</span>
+                                    <span class="text-sm ${assessment.foundationAnalysis.regulatoryCompliance ? 'text-green-600' : 'text-red-600'}">
+                                        ${assessment.foundationAnalysis.regulatoryCompliance ? 'Yes' : 'No'}
+                                    </span>
+                                </div>
+                                ${assessment.foundationAnalysis.weaknesses.length > 0 ? `
+                                    <div>
+                                        <span class="text-sm font-medium text-red-700">Key Weaknesses:</span>
+                                        <ul class="text-sm text-red-600 mt-1 ml-4">
+                                            ${assessment.foundationAnalysis.weaknesses.map(w => `<li>• ${w}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <!-- Performance Timeline -->
+                        <div class="border-t pt-6">
+                            <h4 class="font-semibold mb-3 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                                30-Year Performance Projection
+                            </h4>
+                            <div class="space-y-2">
+                                ${assessment.timeline.map(point => `
+                                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                                        <div class="flex items-center">
+                                            <span class="font-medium text-gray-800">${point.year}</span>
+                                            <span class="ml-3 text-sm text-gray-600">${point.conditions}</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span class="font-medium ${point.score >= 70 ? 'text-green-600' : point.score >= 50 ? 'text-yellow-600' : 'text-red-600'}">${point.score}%</span>
+                                            <span class="ml-2 text-xs px-2 py-1 rounded-full ${
+                                                point.riskLevel === 'low' ? 'bg-green-100 text-green-800' :
+                                                point.riskLevel === 'moderate' ? 'bg-yellow-100 text-yellow-800' :
+                                                point.riskLevel === 'high' ? 'bg-orange-100 text-orange-800' :
+                                                'bg-red-100 text-red-800'
+                                            }">${point.riskLevel}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Recommendations -->
+                        <div class="border-t pt-6">
+                            <h4 class="font-semibold mb-3 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                                Professional Recommendations
+                            </h4>
+                            <div class="space-y-4">
+                                ${assessment.recommendations.map(rec => `
+                                    <div class="border rounded-lg p-4 ${
+                                        rec.priority === 'high' ? 'border-red-200 bg-red-50' :
+                                        rec.priority === 'medium' ? 'border-yellow-200 bg-yellow-50' :
+                                        'border-gray-200 bg-gray-50'
+                                    }">
+                                        <div class="flex justify-between items-start mb-2">
+                                            <h5 class="font-medium text-gray-800">${rec.action}</h5>
+                                            <span class="text-xs px-2 py-1 rounded-full font-medium ${
+                                                rec.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                                rec.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-gray-100 text-gray-800'
+                                            }">${rec.priority}</span>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                            <div>
+                                                <span class="font-medium">Cost:</span> $${rec.costRange.min.toLocaleString()} - $${rec.costRange.max.toLocaleString()}
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">ROI:</span> ${rec.roi}x
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">Timeline:</span> ${rec.timeframe}
+                                            </div>
+                                            <div>
+                                                <span class="font-medium">Complexity:</span> ${rec.feasibility}
+                                            </div>
+                                        </div>
+                                        <p class="text-sm text-gray-700 mt-2">${rec.benefit}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <!-- Risk Factors -->
+                        ${assessment.riskFactors.length > 0 ? `
+                            <div class="border-t pt-6">
+                                <h4 class="font-semibold mb-3 flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                    </svg>
+                                    Identified Risk Factors
+                                </h4>
+                                <div class="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                                    <ul class="text-sm text-orange-800 space-y-1">
+                                        ${assessment.riskFactors.map(factor => `<li>• ${factor}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        ` : ''}
+
+                    </div>
+                `;
+            }
+
+            showError(message) {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-red-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-red-800 font-medium">Assessment Error</span>
+                        </div>
+                        <p class="text-red-700 mt-2">${message}</p>
+                    </div>
+                `;
+                resultsDiv.classList.remove('hidden');
+                document.getElementById('noResults').classList.add('hidden');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new FloodAssessmentApp();
+        });
+    </script>
+</body>
+</html>
