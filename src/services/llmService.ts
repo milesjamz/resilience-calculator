@@ -46,7 +46,6 @@ export class LLMService {
         messages: [{ role: "user", content: prompt }],
 
       });
-      console.log('returning real LLM response for summary', response)
       return response.choices[0].message.content || this.generateMockSummary(context);
     } catch (error) {
       console.error('OpenAI API error:', error);
@@ -161,7 +160,6 @@ export class LLMService {
         feasibility: 'moderate'
       });
     }
-    console.log('returning mock recommendations')
     return recommendations;
   }
 
